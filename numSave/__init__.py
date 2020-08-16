@@ -2,7 +2,7 @@ import os
 import json
 
 from flask import (
-    Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 
 
@@ -34,9 +34,9 @@ def create_app():
             return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         else:
             nums = dataB.execute('SELECT * from numbers').fetchall()
-            data = []
+            data = {'nums' : []}
             for y in nums:
-                data.append([x for x in y])
+                data['nums'].append([x for x in y])
             # print(data)
             nums_json = json.dumps(data)
             return nums_json
