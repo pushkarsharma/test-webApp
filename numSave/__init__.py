@@ -1,4 +1,5 @@
 import os
+import json
 
 from flask import (
     Flask, Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -22,25 +23,22 @@ def create_app():
     except OSError:
         pass
 
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
-    # @app.route('/hello')
-    # def first():
-    #     print(db)
-    #     return render_template('index.html')
 
     @app.route('/', methods=('GET', 'POST'))
     def register():
+        dataB = db.get_db()
         if request.method == 'POST':
-            dataB = db.get_db()
-            number = request.form['num']
+            number = request.form.get('nums')
             dataB.execute('INSERT INTO numbers (num) VALUES (?)', (number))
             dataB.commit()
-            nums = dataB.execute('SELECT num from numbers').fetchall()
-            print(nums)
-            return render_template('number_page.html', nums=nums)
-        return render_template('index.html')
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        else:
+            nums = dataB.execute('SELECT * from numbers').fetchall()
+            data = []
+            for y in nums:
+                data.append([x for x in y])
+            # print(data)
+            nums_json = json.dumps(data)
+            return nums_json
 
     return app
