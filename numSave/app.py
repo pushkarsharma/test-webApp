@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import pymysql
-import database.database as db
+import numSave.database.database as db
 
 
 from flask import (
@@ -34,7 +34,3 @@ def create_app():
             return Response(json.dumps({'Error': 'Incorrect Request'}), status=422, mimetype="application/json")
 
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run(host='0.0.0.0')
