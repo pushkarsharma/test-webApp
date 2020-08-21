@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import pymysql
-import numSave.database.database as db
+import database.database as db
 
 
 from flask import (
