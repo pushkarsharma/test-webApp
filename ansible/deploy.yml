@@ -28,7 +28,7 @@
     #     name: python3
     #     path: /usr/bin/python3.8
 
-    - name: install dependencies and other packages
+    - name: Install dependencies and other packages
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
         - git
@@ -39,3 +39,21 @@
         - libffi-dev
         - python3-setuptools
         - python3-venv
+
+    - name: Clone flask project from GitHub
+      git:
+        repo: 'https://github.com/pushkarsharma/flask-number-store.git'
+        dest: /home/user
+        clone: yes
+        update: yes
+
+    - name: Create virtual environment for the project
+      shell: python3 -m venv /home/user/flask-number-store/
+      args:
+        creates: /home/user/flask-number-store/bin
+
+    - name: Install requirements into virtual environment
+      pip:
+        requirements: /home/user/flask-number-store/requirements.txt
+        virtualenv: /home/user/flask-number-store/
+        executable: pip3
