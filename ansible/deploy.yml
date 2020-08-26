@@ -3,6 +3,11 @@
   hosts: servers
   become: True
   tasks:
+    - name: install python-aptitude
+      apt:
+        name: python-apt
+        update_cache: yes
+
     - name: add repository for python upgrade
       apt_repository:
         repo: ppa:deadsnakes/ppa
