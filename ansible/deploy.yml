@@ -1,5 +1,5 @@
 ---
-- name: Configure webserver with nginx
+- name: Testing Connection
   hosts: servers
   # become: True
   tasks:
