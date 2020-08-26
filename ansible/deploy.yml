@@ -1,0 +1,7 @@
+---
+- name: Configure webserver with nginx
+  hosts: servers
+  # become: True
+  tasks:
+    - name: test connection
+      ping:
