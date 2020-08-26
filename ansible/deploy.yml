@@ -3,39 +3,39 @@
   hosts: servers
   become: True
   tasks:
-    - name: install python-aptitude
-      apt:
-        name: python-apt
-        update_cache: yes
+    # - name: install python-aptitude
+    #   apt:
+    #     name: python3-apt
+    #     update_cache: yes
 
-    - name: add repository for python upgrade
-      apt_repository:
-        repo: ppa:deadsnakes/ppa
+    # - name: add repository for python upgrade
+    #   apt_repository:
+    #     repo: ppa:deadsnakes/ppa
 
-    - name: install python3.8
-      apt:
-        name: python3.8
-        update_cache: yes
+    # - name: install python3.8
+    #   apt:
+    #     name: python3.8
+    #     update_cache: yes
 
-    - name: Alternatives link created for python3.8
-      alternatives:
-        name: python3
-        link: /usr/bin/python3
-        path: /usr/bin/python3.8
+    # - name: Alternatives link created for python3.8
+    #   alternatives:
+    #     name: python3
+    #     link: /usr/bin/python3
+    #     path: /usr/bin/python3.8
 
-    - name: Correct python3 alternative is selected
-      alternatives:
-        name: python3
-        path: /usr/bin/python3.8
+    # - name: Correct python3 alternative is selected
+    #   alternatives:
+    #     name: python3
+    #     path: /usr/bin/python3.8
 
     - name: install dependencies and other packages
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
         - git
-        - python3-pip
-        - python3.8-dev
-        - build-essential
-        - libssl-dev
-        - libffi-dev
-        - python3-setuptools
-        - python3.8-venv
+        # - python3-pip
+        # - python3.8-dev
+        # - build-essential
+        # - libssl-dev
+        # - libffi-dev
+        # - python3-setuptools
+        # - python3.8-venv
