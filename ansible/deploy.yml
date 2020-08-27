@@ -60,4 +60,7 @@
         virtualenv: "{{ _PROJECT_DIR_ }}"
 
     - name: Update configuration files with project directory
-      shell: sed -i 's|_PROJECT_DIR_|{{ _PROJECT_DIR_ }}|g' {{ _PROJECT_DIR_ }}/configurations/*
+      lineinfile:
+        path: {{ _PROJECT_DIR_ }}/configurations/
+        regex: '_PROJECT_DIR_'
+        line: "{{ _PROJECT_DIR_ }}"
