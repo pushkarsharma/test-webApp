@@ -45,19 +45,19 @@
     - name: Clone flask project from GitHub
       git:
         repo: 'https://github.com/pushkarsharma/flask-number-store.git'
-        dest: {{ _PROJECT_DIR_ }}
+        dest: "{{ _PROJECT_DIR_ }}"
         clone: yes
         update: yes
 
     - name: Create virtual environment for the project
       shell: python3 -m venv {{ _PROJECT_DIR_ }}
       args:
-        creates: {{ _PROJECT_DIR_ }}/bin
+        creates: "{{ _PROJECT_DIR_ }}/bin"
 
     - name: Install requirements into virtual environment
       pip:
-        requirements: {{ _PROJECT_DIR_ }}/requirements.txt
-        virtualenv: {{ _PROJECT_DIR_ }}
+        requirements: "{{ _PROJECT_DIR_ }}/requirements.txt"
+        virtualenv: "{{ _PROJECT_DIR_ }}"
 
     - name: Update configuration files with project directory
       shell: sed -i 's|_PROJECT_DIR_|{{ _PROJECT_DIR_ }}|g' {{ _PROJECT_DIR_ }}/configurations/*
