@@ -43,7 +43,7 @@
     - name: Clone flask project from GitHub
       git:
         repo: 'https://github.com/pushkarsharma/flask-number-store.git'
-        dest: /home/user
+        dest: /home/user/flask-number-store
         clone: yes
         update: yes
 
@@ -56,4 +56,3 @@
       pip:
         requirements: /home/user/flask-number-store/requirements.txt
         virtualenv: /home/user/flask-number-store/
-        executable: pip3
