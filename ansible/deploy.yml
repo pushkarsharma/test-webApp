@@ -60,7 +60,7 @@
         virtualenv: "{{ _PROJECT_DIR_ }}"
 
     - name: Update configuration files with project directory
-      lineinfile:
-        path: "{{ _PROJECT_DIR_ }}/configurations/"
-        regex: '_PROJECT_DIR_'
-        line: "{{ _PROJECT_DIR_ }}"
+      replace:
+        path: "{{ _PROJECT_DIR_ }}/configurations/*"
+        regexp: '_PROJECT_DIR_'
+        replace: "{{ _PROJECT_DIR_ }}"
