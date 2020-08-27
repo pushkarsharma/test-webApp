@@ -61,6 +61,6 @@
 
     - name: Update configuration files with project directory
       lineinfile:
-        path: {{ _PROJECT_DIR_ }}/configurations/
+        path: "{{ _PROJECT_DIR_ }}/configurations/"
         regex: '_PROJECT_DIR_'
         line: "{{ _PROJECT_DIR_ }}"
