@@ -59,8 +59,15 @@
         requirements: "{{ _PROJECT_DIR_ }}/requirements.txt"
         virtualenv: "{{ _PROJECT_DIR_ }}"
 
-    - name: Update configuration files with project directory
+    - name: Collect all configuration files fot the next update
+      find:
+        paths: "{{ _PROJECT_DIR_ }}/configurations/"
+        patterns: "*"
+      register: config_files
+
+    - name: Replace configuration files with project directory
       replace:
-        path: "{{ _PROJECT_DIR_ }}/configurations/*"
-        regexp: '_PROJECT_DIR_'
+        path: "{{ item.path }}"
+        regexp: "_PROJECT_DIR_"
         replace: "{{ _PROJECT_DIR_ }}"
+      loop: "{{ config_files.files }}"
