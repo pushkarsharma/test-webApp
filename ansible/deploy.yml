@@ -5,31 +5,6 @@
   vars:
     _PROJECT_DIR_: /home/user/flask-number-store
   tasks:
-    # - name: install python-aptitude
-    #   apt:
-    #     name: python3-apt
-    #     update_cache: yes
-
-    # - name: add repository for python upgrade
-    #   apt_repository:
-    #     repo: ppa:deadsnakes/ppa
-
-    # - name: install python3.8
-    #   apt:
-    #     name: python3.8
-    #     update_cache: yes
-
-    # - name: Alternatives link created for python3.8
-    #   alternatives:
-    #     name: python3
-    #     link: /usr/bin/python3
-    #     path: /usr/bin/python3.8
-
-    # - name: Correct python3 alternative is selected
-    #   alternatives:
-    #     name: python3
-    #     path: /usr/bin/python3.8
-
     - name: Install dependencies and other packages
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
@@ -41,6 +16,7 @@
         - libffi-dev
         - python3-setuptools
         - python3-venv
+        - nginx
 
     - name: Clone flask project from GitHub
       git:
@@ -71,3 +47,39 @@
         regexp: "_PROJECT_DIR_"
         replace: "{{ _PROJECT_DIR_ }}"
       loop: "{{ config_files.files }}"
+
+    - name: Copy numSave service config file to systemd
+      copy:
+        src: "{{ _PROJECT_DIR_ }}/configurations/numSave.service"
+        dest: "/etc/systemd/system/"
+        remote_src: yes
+        mode: '0777'
+
+    - name: Start numSave service
+      systemd:
+        name: numSave
+        state: started
+        enabled: yes
+
+    - name: Copy nginx config file
+      copy:
+        src: "{{ _PROJECT_DIR_ }}/configurations/numSave"
+        dest: "/etc/nginx/sites-available/"
+        remote_src: yes
+        mode: '0644'
+    
+    - name: Create symbolic link for Nginx
+      file:
+        src: /etc/nginx/sites-available/numSave
+        dest: /etc/nginx/sites-enabled
+
+    - name: Restart Nginx service
+      systemd:
+        name: nginx
+        state: restarted
+        daemon_reload: yes
+
+    - name: Adjust firewall for Nginx
+      ufw:
+        name: Nginx Full
+        rule: allow
