@@ -60,6 +60,7 @@
         name: numSave
         state: started
         enabled: yes
+        daemon_reload: yes
 
     - name: Copy nginx config file
       copy:
@@ -71,7 +72,8 @@
     - name: Create symbolic link for Nginx
       file:
         src: /etc/nginx/sites-available/numSave
-        dest: /etc/nginx/sites-enabled
+        dest: /etc/nginx/sites-enabled/numSave
+        state: link
 
     - name: Restart Nginx service
       systemd:
