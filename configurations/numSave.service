@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve numSave
+After=network.target
+
+[Service]
+User=user
+Group=www-data
+WorkingDirectory=_PROJECT_DIR_
+Environment="PATH=_PROJECT_DIR_/bin"
+ExecStart=_PROJECT_DIR_/bin/uwsgi --ini numSave.ini
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,8 @@
 - name: Flask App Setup
   hosts: servers
   become: True
+  vars:
+    _PROJECT_DIR_: /home/user/flask-number-store
   tasks:
     # - name: install python-aptitude
     #   apt:
@@ -43,16 +45,19 @@
     - name: Clone flask project from GitHub
       git:
         repo: 'https://github.com/pushkarsharma/flask-number-store.git'
-        dest: /home/user/flask-number-store
+        dest: {{ _PROJECT_DIR_ }}
         clone: yes
         update: yes
 
     - name: Create virtual environment for the project
-      shell: python3 -m venv /home/user/flask-number-store/
+      shell: python3 -m venv {{ _PROJECT_DIR_ }}
       args:
-        creates: /home/user/flask-number-store/bin
+        creates: {{ _PROJECT_DIR_ }}/bin
 
     - name: Install requirements into virtual environment
       pip:
-        requirements: /home/user/flask-number-store/requirements.txt
-        virtualenv: /home/user/flask-number-store/
+        requirements: {{ _PROJECT_DIR_ }}/requirements.txt
+        virtualenv: {{ _PROJECT_DIR_ }}
+
+    - name: Update configuration files with project directory
+      shell: sed -i 's|_PROJECT_DIR_|{{ _PROJECT_DIR_ }}|g' {{ _PROJECT_DIR_ }}/configurations/*
