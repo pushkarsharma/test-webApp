@@ -1,0 +1,10 @@
+---
+- name: MariaDB Setup
+  hosts: servers
+  tasks:
+    - name: Install dependencies and MariaDB
+      apt: name={{ item }} update_cache=yes cache_valid_time=360
+      loop:
+        - python3-pymysql
+        - mariadb-server
+      become: true
