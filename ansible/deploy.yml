@@ -1,7 +1,6 @@
 ---
 - name: Flask App Setup
   hosts: servers
-  become: True
   vars:
     _PROJECT_DIR_: /home/user/flask-number-store
   tasks:
@@ -19,6 +18,7 @@
         - python3-setuptools
         - python3-venv
         - nginx
+      become: true
 
     - name: Clone flask project from GitHub
       git:
@@ -56,6 +56,7 @@
         dest: "/etc/systemd/system/"
         remote_src: yes
         mode: '0777'
+      become: true
 
     - name: Start numSave service
       systemd:
@@ -63,6 +64,7 @@
         state: started
         enabled: yes
         daemon_reload: yes
+      become: true
 
     - name: Copy nginx config file
       copy:
@@ -70,20 +72,24 @@
         dest: "/etc/nginx/sites-available/"
         remote_src: yes
         mode: '0644'
+      become: true
     
     - name: Create symbolic link for Nginx
       file:
         src: /etc/nginx/sites-available/numSave
         dest: /etc/nginx/sites-enabled/numSave
         state: link
+      become: true
 
     - name: Restart Nginx service
       systemd:
         name: nginx
         state: restarted
         daemon_reload: yes
+      become: true
 
     - name: Adjust firewall for Nginx
       ufw:
         name: Nginx Full
         rule: allow
+      become: true
