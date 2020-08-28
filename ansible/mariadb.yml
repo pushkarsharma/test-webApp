@@ -38,22 +38,22 @@
 
     - name: Create user with name 'user' with all database privileges
       mysql_user:
-        name: {{ username }}
-        password: {{ user_password }}
+        name: "{{ username }}"
+        password: "{{ user_password }}"
         priv: '*.*:ALL'
         state: present
         login_unix_socket: "/var/run/mysqld/mysqld.sock"
 
     - name: Delete 'test' database
       mysql_db:
-        login_user: {{ username }}
-        login_password: {{ user_password }}
+        login_user: "{{ username }}"
+        login_password: "{{ user_password }}"
         name: test
         state: absent
 
     - name: Create 'number-storage' database
       mysql_db:
-        login_user: {{ username }}
-        login_password: {{ user_password }}
+        login_user: "{{ username }}"
+        login_password: "{{ user_password }}"
         name: number-storage
         state: present
