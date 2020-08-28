@@ -4,25 +4,14 @@
   become: true
   vars:
     mysql_root_password: root
+    username: user
+    user_password: password
   tasks:
     - name: Install dependencies and MariaDB
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
         - python3-pymysql
         - mariadb-server
-
-    # - name: Fetch root password from .my.cnf
-    #   mysql_user:
-    #     name: 
-    #     password: 
-
-    # - name: Set the root credentials by copying file
-    #   copy:
-    #     src: "{{ _PROJECT_DIR_ }}/configurations/.my.cnf"
-    #     dest: "/home/user/"
-    #     remote_src: yes
-    #     mode: '0777'
-    #   become: true
 
     - name: Set root user password
       # If .my.cnf already exists, this will cause an mysql-root-password update.
@@ -35,31 +24,36 @@
     - name: Create .my.cnf
       template:
         src: "templates/client.my.cnf.j2"
-        dest: "/home/user/.my.cnf"
+        dest: "/root/.my.cnf"
         owner: root
         group: root
         mode: 0600
-        login_unix_socket: "/var/run/mysqld/mysqld.sock"
 
     - name: Remove anonymous user account for localhost
       mysql_user:
         name: ''
         host: localhost
         state: absent
+        login_unix_socket: "/var/run/mysqld/mysqld.sock"
 
     - name: Create user with name 'user' with all database privileges
       mysql_user:
-        name: user
-        password: password
+        name: {{ username }}
+        password: {{ user_password }}
         priv: '*.*:ALL'
         state: present
+        login_unix_socket: "/var/run/mysqld/mysqld.sock"
 
     - name: Delete 'test' database
       mysql_db:
+        login_user: {{ username }}
+        login_password: {{ user_password }}
         name: test
         state: absent
 
     - name: Create 'number-storage' database
       mysql_db:
+        login_user: {{ username }}
+        login_password: {{ user_password }}
         name: number-storage
         state: present
