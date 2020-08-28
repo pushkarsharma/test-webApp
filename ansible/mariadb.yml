@@ -1,26 +1,43 @@
 ---
 - name: MariaDB Setup
   hosts: servers
+  become: true
+  vars:
+    mysql_root_password: root
   tasks:
     - name: Install dependencies and MariaDB
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
         - python3-pymysql
         - mariadb-server
-      become: true
 
-    - name: Fetch root password from .my.cnf
+    # - name: Fetch root password from .my.cnf
+    #   mysql_user:
+    #     name: 
+    #     password: 
+
+    # - name: Set the root credentials by copying file
+    #   copy:
+    #     src: "{{ _PROJECT_DIR_ }}/configurations/.my.cnf"
+    #     dest: "/home/user/"
+    #     remote_src: yes
+    #     mode: '0777'
+    #   become: true
+
+    - name: Set root user password
+      # If .my.cnf already exists, this will cause an mysql-root-password update.
       mysql_user:
-        login_user:
-        login_password:
+        name: root
+        password: "{{ mysql_root_password}}"
+        check_implicit_admin: true
 
-    - name: Set the root credentials by copying file
-      copy:
-        src: "{{ _PROJECT_DIR_ }}/configurations/.my.cnf"
-        dest: "/home/user/"
-        remote_src: yes
-        mode: '0777'
-      become: true
+    - name: Create .my.cnf
+      template:
+        src: "templates/client.my.cnf.j2"
+        dest: "/home/user/.my.cnf"
+        owner: root
+        group: root
+        mode: 0600
 
     - name: Remove anonymous user account for localhost
       mysql_user:
