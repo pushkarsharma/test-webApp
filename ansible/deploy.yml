@@ -1,6 +1,6 @@
 ---
 - name: Flask App Setup
-  hosts: servers
+  hosts: application_servers
   vars:
     _PROJECT_DIR_: /home/user/flask-number-store
   tasks:
@@ -37,7 +37,7 @@
         requirements: "{{ _PROJECT_DIR_ }}/requirements.txt"
         virtualenv: "{{ _PROJECT_DIR_ }}"
 
-    - name: Collect all configuration files fot the next update
+    - name: Collect all configuration files for the next update
       find:
         paths: "{{ _PROJECT_DIR_ }}/configurations/"
         patterns: "*"
@@ -48,6 +48,13 @@
         path: "{{ item.path }}"
         regexp: "_PROJECT_DIR_"
         replace: "{{ _PROJECT_DIR_ }}"
+      loop: "{{ config_files.files }}"
+
+    - name: Replace configuration files with application IP
+      replace:
+        path: "{{ item.path }}"
+        regexp: "_APPLICATION_IP_"
+        replace: "{{ ansible_enp0s8.ipv4.address }}"
       loop: "{{ config_files.files }}"
 
     - name: Copy numSave service config file to systemd

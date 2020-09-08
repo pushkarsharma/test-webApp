@@ -3,7 +3,6 @@ server {
     server_name 0.0.0.0;
 
     location / {
-        include uwsgi_params;
-        uwsgi_pass unix:_PROJECT_DIR_/numSave/numSave.sock;
+        proxy_pass http://_APPLICATION_IP_:5000;
     }
 }
