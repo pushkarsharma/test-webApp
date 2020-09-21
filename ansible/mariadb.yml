@@ -1,6 +1,6 @@
 ---
 - name: MariaDB Setup
-  hosts: servers
+  hosts: database_servers
   become: true
   vars:
     mysql_root_password: root
@@ -51,9 +51,22 @@
         name: test
         state: absent
 
-    - name: Create 'number-storage' database
+    - name: Create 'number_storage' database
       mysql_db:
         login_user: "{{ username }}"
         login_password: "{{ user_password }}"
-        name: number-storage
+        name: number_storage
         state: present
+
+    - name: Collect all database files for the database IP update
+      find:
+        paths: "{{ _PROJECT_DIR_ }}/numSave/database/"
+        patterns: "database.py"
+      register: database_file
+
+    - name: Replace application database connector file with database IP
+      replace:
+        path: "{{ item.path }}"
+        regexp: "_DATABASE_IP_"
+        replace: "{{ ansible_enp0s8.ipv4.address }}"
+      loop: "{{ database_file.files }}"

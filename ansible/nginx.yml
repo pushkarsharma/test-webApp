@@ -1,0 +1,59 @@
+---
+- name: Flask App Setup
+  hosts: application_servers
+  vars:
+    _PROJECT_DIR_: /home/user/flask-number-store
+  tasks:
+    - name: Install dependencies and other packages
+      apt: name={{ item }} update_cache=yes cache_valid_time=360
+      loop:
+        - nginx
+      become: true
+
+    - name: Clone flask project from GitHub
+      git:
+        repo: 'https://github.com/pushkarsharma/flask-number-store.git'
+        dest: "{{ _PROJECT_DIR_ }}"
+        clone: yes
+        update: yes
+
+    - name: Collect all configuration files for the next update
+      find:
+        paths: "{{ _PROJECT_DIR_ }}/configurations/"
+        patterns: "*"
+      register: config_files
+
+    - name: Replace configuration files with application IP
+      replace:
+        path: "{{ item.path }}"
+        regexp: "_APPLICATION_IP_"
+        replace: "{{ ansible_enp0s8.ipv4.address }}"
+      loop: "{{ config_files.files }}"
+
+    - name: Copy nginx config file
+      copy:
+        src: "{{ _PROJECT_DIR_ }}/configurations/numSave"
+        dest: "/etc/nginx/sites-available/"
+        remote_src: yes
+        mode: '0644'
+      become: true
+
+    - name: Create symbolic link for Nginx
+      file:
+        src: /etc/nginx/sites-available/numSave
+        dest: /etc/nginx/sites-enabled/numSave
+        state: link
+      become: true
+
+    - name: Restart Nginx service
+      systemd:
+        name: nginx
+        state: restarted
+        daemon_reload: yes
+      become: true
+
+    - name: Adjust firewall for Nginx
+      ufw:
+        name: Nginx Full
+        rule: allow
+      become: true

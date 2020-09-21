@@ -17,7 +17,6 @@
         - libffi-dev
         - python3-setuptools
         - python3-venv
-        - nginx
       become: true
 
     - name: Clone flask project from GitHub
@@ -50,13 +49,6 @@
         replace: "{{ _PROJECT_DIR_ }}"
       loop: "{{ config_files.files }}"
 
-    - name: Replace configuration files with application IP
-      replace:
-        path: "{{ item.path }}"
-        regexp: "_APPLICATION_IP_"
-        replace: "{{ ansible_enp0s8.ipv4.address }}"
-      loop: "{{ config_files.files }}"
-
     - name: Copy numSave service config file to systemd
       copy:
         src: "{{ _PROJECT_DIR_ }}/configurations/numSave.service"
@@ -71,32 +63,4 @@
         state: started
         enabled: yes
         daemon_reload: yes
-      become: true
-
-    - name: Copy nginx config file
-      copy:
-        src: "{{ _PROJECT_DIR_ }}/configurations/numSave"
-        dest: "/etc/nginx/sites-available/"
-        remote_src: yes
-        mode: '0644'
-      become: true
-    
-    - name: Create symbolic link for Nginx
-      file:
-        src: /etc/nginx/sites-available/numSave
-        dest: /etc/nginx/sites-enabled/numSave
-        state: link
-      become: true
-
-    - name: Restart Nginx service
-      systemd:
-        name: nginx
-        state: restarted
-        daemon_reload: yes
-      become: true
-
-    - name: Adjust firewall for Nginx
-      ufw:
-        name: Nginx Full
-        rule: allow
       become: true

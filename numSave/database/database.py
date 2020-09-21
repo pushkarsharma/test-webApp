@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Database:
     def __init__(self):
-        self.engine = create_engine("mysql+pymysql://user:password@localhost/number-storage")
+        self.engine = create_engine("mysql+pymysql://user:password@_DATABASE_IP_/number_storage")
         self.conn = self.engine.connect()
         self.metadata = MetaData()
 
