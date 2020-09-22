@@ -7,6 +7,7 @@
     - name: Install dependencies and other packages
       apt: name={{ item }} update_cache=yes cache_valid_time=360
       loop:
+        - git
         - nginx
       become: true
 
