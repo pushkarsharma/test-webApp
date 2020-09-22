@@ -3,6 +3,7 @@
   hosts: database_servers
   become: true
   vars:
+    _PROJECT_DIR_: /home/user/flask-number-store
     mysql_root_password: root
     username: user
     user_password: password
