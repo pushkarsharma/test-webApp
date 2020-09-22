@@ -63,6 +63,7 @@
         state: directory
         mode: '006'
         recurse: yes
+      become: true
 
     - name: Create uWSGI log file
       copy:
@@ -70,6 +71,7 @@
         dest: /var/log/uwsgi/
         force: no
         mode: '006'
+      become: true
 
     - name: Start numSave service
       systemd:
