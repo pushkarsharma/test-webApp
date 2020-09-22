@@ -68,7 +68,7 @@
     - name: Create uWSGI log file
       copy:
         content: ""
-        dest: /var/log/uwsgi/
+        dest: /var/log/uwsgi/numSave.log
         force: no
         mode: '006'
       become: true
