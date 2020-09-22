@@ -41,6 +41,7 @@
       mysql_user:
         name: "{{ username }}"
         password: "{{ user_password }}"
+        host: '192.168.86.%'
         priv: '*.*:ALL'
         state: present
         login_unix_socket: "/var/run/mysqld/mysqld.sock"
