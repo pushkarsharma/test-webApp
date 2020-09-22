@@ -54,8 +54,22 @@
         src: "{{ _PROJECT_DIR_ }}/configurations/numSave.service"
         dest: "/etc/systemd/system/"
         remote_src: yes
-        mode: '0777'
+        mode: '777'
       become: true
+
+    - name: Create uWSGI log directory
+      file:
+        path: /var/log/uwsgi
+        state: directory
+        mode: '006'
+        recurse: yes
+
+    - name: Create uWSGI log file
+      copy:
+        content: ""
+        dest: /var/log/uwsgi/
+        force: no
+        mode: '006'
 
     - name: Start numSave service
       systemd:
