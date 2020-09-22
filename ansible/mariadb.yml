@@ -71,3 +71,17 @@
         regexp: "_DATABASE_IP_"
         replace: "{{ ansible_enp0s8.ipv4.address }}"
       loop: "{{ database_file.files }}"
+
+    - name: Configure MariaDB to accept request from all IPs
+      blockinfile:
+        path: "/etc/mysql/my.cnf"
+        block: |
+          [mysqld]
+          skip-networking=0
+          skip-bind-address
+
+    - name: Start mariadb service
+      systemd:
+        name: mariadb
+        state: restarted
+        enabled: yes
