@@ -61,7 +61,7 @@
       file:
         path: /var/log/uwsgi
         state: directory
-        mode: '006'
+        mode: '777'
         recurse: yes
       become: true
 
@@ -70,7 +70,7 @@
         content: ""
         dest: /var/log/uwsgi/numSave.log
         force: no
-        mode: '006'
+        mode: '777'
       become: true
 
     - name: Start numSave service
