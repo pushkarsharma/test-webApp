@@ -85,7 +85,7 @@
 
     - name: Configure firewall to allow SQL requests
       community.general.ufw:
-        from_ip: "{{ _IP_ }}"
+        from_ip: "{{ _APP_IP_ }}"
         rule: allow
         proto: any
         to_port: 3306
