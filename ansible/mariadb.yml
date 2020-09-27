@@ -7,6 +7,7 @@
     mysql_root_password: root
     username: user
     user_password: password
+    _IP_: 192.168.86.22
   tasks:
     - name: Install dependencies and MariaDB
       apt: name={{ item }} update_cache=yes cache_valid_time=360
@@ -81,6 +82,13 @@
 
           skip-networking=0
           skip-bind-address
+
+    - name: Configure firewall to allow SQL requests
+      community.general.ufw:
+        from_ip: "{{ _IP_ }}"
+        rule: allow
+        proto: any
+        to_port: 3306
 
     - name: Start mariadb service
       systemd:
