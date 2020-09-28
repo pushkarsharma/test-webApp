@@ -3,6 +3,7 @@
   hosts: nginx_servers
   vars:
     _PROJECT_DIR_: /home/user/flask-number-store
+    _APPLICATION_IP_: 172.31.3.6
   tasks:
     - name: Install dependencies and other packages
       apt: name={{ item }} update_cache=yes cache_valid_time=360
